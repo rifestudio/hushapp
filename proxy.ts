@@ -32,9 +32,16 @@ export async function proxy(request: NextRequest) {
   // защищаем дашборд и чат
   const path = request.nextUrl.pathname;
   const isProtected =
-    path === "/" || path.startsWith("/chat") || path.startsWith("/intro");
+    path.startsWith("/home") ||
+    path.startsWith("/chat") ||
+    path.startsWith("/intro") ||
+    path.startsWith("/create");
   if (!user && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+  // залогиненных на / редиректим на /home
+  if (user && path === "/") {
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return response;
