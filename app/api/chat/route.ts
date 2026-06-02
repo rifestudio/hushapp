@@ -84,7 +84,7 @@ ABSOLUTE RULE (all stages): Keep everything non-sexual and SFW. No sexual conten
   systemPrompt += `
 
 CRITICAL RESPONSE RULE:
-- End most replies with a direct question to the user.
+- Do NOT ask a question in every message. Ask questions sparingly — maximum once every 2-3 messages. Sometimes just respond, share something, or react. Vary your responses. Never pepper the user with questions.
 - Keep replies natural, immersive and concise (3-5 sentences).`;
 
   systemPrompt += `
@@ -118,20 +118,46 @@ Short. Casual. Curious. Sometimes imperfect.`;
   ];
 
   // === основной ответ ===
-  const aiRes = await fetch("https://api.featherless.ai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.FEATHERLESS_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "dphn/Dolphin-Mistral-24B-Venice-Edition",
-      max_tokens: 400,
-      temperature: levelNum < 3 ? 0.75 : 0.85,
-      top_p: 0.94,
-      messages: messagesForModel,
+  // запускаем оба вызова одновременно
+  const [aiRes, scoreRes] = await Promise.all([
+    fetch("https://api.featherless.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.FEATHERLESS_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "dphn/Dolphin-Mistral-24B-Venice-Edition",
+        max_tokens: 400,
+        temperature: levelNum < 3 ? 0.75 : 0.85,
+        top_p: 0.94,
+        messages: messagesForModel,
+      }),
+      signal: AbortSignal.timeout(10000),
     }),
-  });
+    fetch("https://api.featherless.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.FEATHERLESS_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "dphn/Dolphin-Mistral-24B-Venice-Edition",
+        max_tokens: 5,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You rate how much a conversation deepened the bond, based on the user's last message. " +
+              "Reply with ONLY a single integer from 0 to 5. " +
+              "0 = shallow/one-word/off-putting, 5 = personal, open, meaningful sharing. No words, just the number.",
+          },
+          { role: "user", content: message },
+        ],
+      }),
+      signal: AbortSignal.timeout(5000),
+    }),
+  ]);
 
   if (!aiRes.ok) {
     return NextResponse.json({ error: "Model error" }, { status: 502 });
@@ -141,11 +167,10 @@ Short. Casual. Curious. Sometimes imperfect.`;
   let rawReply: string = aiData.choices?.[0]?.message?.content ?? "...";
 
   rawReply = rawReply
-    .replace(/^\s*\|\|\|\s*/, "") // убрать ||| в начале
-    .replace(/\s*\|\|\|\s*$/, "") // убрать ||| в конце
+    .replace(/^\s*\|\|\|\s*/, "")
+    .replace(/\s*\|\|\|\s*$/, "")
     .trim();
 
-  // разбиение на пузыри: по ||| или, если его нет и текст длинный, режем по предложениям
   let messagesArray = rawReply
     .split("|||")
     .map((s) => s.trim())
@@ -163,38 +188,12 @@ Short. Casual. Curious. Sometimes imperfect.`;
   }
 
   const reply = messagesArray.length > 1 ? messagesArray : rawReply;
-  // для базы всегда строка (с разделителями, если их несколько)
   const replyForDb =
     messagesArray.length > 1 ? messagesArray.join("|||") : rawReply;
 
-  // === оценка прироста интереса ===
-  let gain = 0;
+  // оценка уровня
+  let gain = 1;
   try {
-    const scoreRes = await fetch(
-      "https://api.featherless.ai/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.FEATHERLESS_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "dphn/Dolphin-Mistral-24B-Venice-Edition",
-          max_tokens: 5,
-          messages: [
-            {
-              role: "system",
-              content:
-                "You rate how much a conversation deepened the bond, based on the user's last message. " +
-                "Reply with ONLY a single integer from 0 to 5. " +
-                "0 = shallow/one-word/off-putting, 5 = personal, open, meaningful sharing. No words, just the number.",
-            },
-            { role: "user", content: message },
-          ],
-        }),
-      },
-    );
-
     if (scoreRes.ok) {
       const scoreData = await scoreRes.json();
       const raw = scoreData.choices?.[0]?.message?.content ?? "0";
