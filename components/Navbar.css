@@ -1,0 +1,173 @@
+/* ============================================================
+   Navbar
+   ============================================================ */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(26, 13, 14, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 100;
+  transition: background 0.3s var(--ease-silk);
+}
+
+.navbar.scrolled {
+  background: rgba(26, 13, 14, 0.85);
+}
+
+@media (max-width: 767px) {
+  .navbar {
+    padding: 0 1rem;
+  }
+}
+
+/* ——— Brand Mark ——— */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-serif);
+  font-size: var(--text-h2);
+  color: var(--text-primary);
+  letter-spacing: 0.15em;
+  font-weight: 500;
+  user-select: none;
+}
+
+.brand-ember {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ember);
+  animation: emberPulse 2.5s var(--ease-breath) infinite;
+  margin-left: 1px;
+  margin-top: 2px;
+}
+
+/* ——— Enthusiasm Meter ——— */
+.enthusiasm-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.875rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 107, 53, 0.06);
+  border: 1px solid rgba(255, 107, 53, 0.1);
+}
+
+.flame-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flame-icon {
+  color: var(--ember);
+  width: 16px;
+  height: 16px;
+}
+
+.flame-icon.healthy {
+  animation: flameBreathe 3s var(--ease-breath) infinite;
+}
+
+.flame-icon.low {
+  animation: flameFlicker 0.8s ease-in-out infinite;
+}
+
+.enthusiasm-balance {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  color: var(--text-primary);
+  font-weight: 500;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.enthusiasm-replenish {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--crimson-bright);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: text-shadow 0.2s var(--ease-silk);
+  cursor: pointer;
+}
+
+.enthusiasm-replenish:hover {
+  text-shadow: 0 0 8px rgba(196, 30, 58, 0.4);
+}
+
+@media (max-width: 1023px) {
+  .enthusiasm-balance-text {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .enthusiasm-meter {
+    display: none;
+  }
+}
+
+/* ——— Plan Badge ——— */
+.plan-badge {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+
+.plan-badge.premium {
+  color: var(--ember);
+  background: rgba(255, 107, 53, 0.08);
+  border: 1px solid rgba(255, 107, 53, 0.15);
+}
+
+.plan-badge.free {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 767px) {
+  .plan-badge {
+    display: none;
+  }
+}
+
+/* ——— User Avatar ——— */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--border-subtle);
+  transition: border-color 0.3s var(--ease-silk), box-shadow 0.3s var(--ease-silk);
+  cursor: pointer;
+}
+
+.user-avatar:hover {
+  border-color: var(--crimson);
+  box-shadow: 0 0 12px rgba(196, 30, 58, 0.2);
+}
+
+/* ——— Navbar Right Section ——— */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

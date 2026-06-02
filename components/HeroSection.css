@@ -1,0 +1,140 @@
+/* ============================================================
+   Hero Section
+   ============================================================ */
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 55vh;
+  padding: 6rem 1.5rem 3rem;
+  position: relative;
+}
+
+/* ——— Greeting ——— */
+.hero-greeting {
+  font-family: var(--font-serif);
+  font-size: var(--text-display);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: var(--letterspacing-tight);
+  line-height: var(--lineheight-tight);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.hero-greeting .name-highlight {
+  color: var(--ember);
+}
+
+.hero-subtitle {
+  font-family: var(--font-serif);
+  font-size: var(--text-h2);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: var(--lineheight-tight);
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+/* ——— Create Partner Button ——— */
+.create-btn-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.create-btn-ambient {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(196, 30, 58, 0.1) 0%,
+    transparent 70%
+  );
+  animation: ambientPulse 6s var(--ease-breath) infinite;
+  pointer-events: none;
+}
+
+.create-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.125rem 3rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    135deg,
+    var(--crimson) 0%,
+    var(--ember) 50%,
+    var(--crimson-bright) 100%
+  );
+  background-size: 200% 200%;
+  animation:
+    gradientShift 8s var(--ease-breath) infinite,
+    heroGlowBreathe 4s var(--ease-breath) infinite;
+  border: 1.5px solid rgba(196, 30, 58, 0.3);
+  cursor: pointer;
+  transition: border-color 0.3s var(--ease-silk);
+  will-change: transform;
+  z-index: 1;
+}
+
+/* inner content — pulls further than the button for iOS-style depth */
+.create-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  will-change: transform;
+}
+
+.create-btn:hover {
+  border-color: rgba(255, 107, 53, 0.5);
+}
+
+/* squish on press — like iOS icons */
+.create-btn:active {
+  transform: scale(0.94) !important;
+  transition: transform 0.12s var(--ease-silk);
+}
+
+.create-btn:active .create-btn-inner {
+  transform: scale(0.96);
+  transition: transform 0.12s var(--ease-silk);
+}
+
+.create-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.3);
+}
+
+.create-btn .btn-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.9;
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 767px) {
+  .hero-section {
+    min-height: 50vh;
+    padding: 5rem 1rem 2rem;
+  }
+
+  .create-btn {
+    padding: 1rem 2.5rem;
+    width: 100%;
+    max-width: 320px;
+  }
+}

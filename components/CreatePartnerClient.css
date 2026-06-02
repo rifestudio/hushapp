@@ -1,0 +1,226 @@
+/* ============================================================
+   Create Partner
+   ============================================================ */
+
+.create-screen {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.create-back {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  background: rgba(26, 13, 14, 0.5);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+  transition:
+    color var(--duration-fast) var(--ease-silk),
+    border-color var(--duration-fast) var(--ease-silk);
+}
+.create-back:hover {
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+.create-back svg {
+  width: 19px;
+  height: 19px;
+}
+
+.create-card-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  z-index: 1;
+}
+
+.create-card-ambient {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 540px;
+  height: 540px;
+  max-width: 120vw;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(196, 30, 58, 0.08) 0%,
+    rgba(255, 107, 53, 0.04) 40%,
+    transparent 70%
+  );
+  animation: ambientPulse 7s var(--ease-breath) infinite;
+  pointer-events: none;
+}
+
+.create-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(26, 13, 14, 0.55);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2.5rem 2.25rem;
+  box-shadow:
+    0 0 60px rgba(196, 30, 58, 0.06),
+    0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.create-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.create-title {
+  font-family: var(--font-serif);
+  font-size: var(--text-h1);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: var(--letterspacing-tight);
+  line-height: var(--lineheight-tight);
+  margin-bottom: 0.5rem;
+}
+
+.create-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.create-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.create-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  letter-spacing: var(--letterspacing-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.create-input {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  color: var(--text-primary);
+  background: rgba(10, 5, 6, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1rem;
+  transition:
+    border-color var(--duration-normal) var(--ease-silk),
+    box-shadow var(--duration-normal) var(--ease-silk);
+}
+.create-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+.create-input:hover {
+  border-color: var(--border-hover);
+}
+.create-input:focus {
+  outline: none;
+  border-color: rgba(196, 30, 58, 0.4);
+  box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.08);
+}
+
+.create-textarea {
+  resize: none;
+  line-height: 1.5;
+}
+
+.create-error {
+  color: var(--crimson-bright);
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  text-align: center;
+}
+
+.create-submit {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    135deg,
+    var(--crimson) 0%,
+    var(--ember) 50%,
+    var(--crimson-bright) 100%
+  );
+  background-size: 200% 200%;
+  animation:
+    gradientShift 8s var(--ease-breath) infinite,
+    heroGlowBreathe 4s var(--ease-breath) infinite;
+  border: 1.5px solid rgba(196, 30, 58, 0.3);
+  transition:
+    transform var(--duration-normal) var(--ease-silk),
+    border-color var(--duration-normal) var(--ease-silk);
+}
+.create-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(255, 107, 53, 0.5);
+}
+.create-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.create-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.create-submit .btn-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.create-entrance {
+  opacity: 0;
+  transform: translateY(28px);
+  animation: entranceCard 900ms var(--ease-dramatic) forwards;
+}
+.create-entrance-delay-1 {
+  animation-delay: 120ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .create-entrance {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .create-card-ambient {
+    animation: none;
+  }
+}
