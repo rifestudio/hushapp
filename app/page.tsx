@@ -61,21 +61,32 @@ const stagger = (delayChildren = 0.1): Variants => ({
 function ScrollReveal({
   children,
   className,
-  variants = stagger(0.15),
+  delayChildren = 0.15,
   threshold = 0.15,
 }: {
   children: React.ReactNode;
   className?: string;
-  variants?: object;
+  delayChildren?: number;
   threshold?: number;
 }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: threshold });
+
+  const containerVariants: Variants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: delayChildren,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
   return (
     <motion.div
       ref={ref}
       className={className}
-      variants={variants}
+      variants={containerVariants}
       initial="hidden"
       animate={inView ? "show" : "hidden"}
     >
