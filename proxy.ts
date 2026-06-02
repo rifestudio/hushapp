@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -31,7 +31,8 @@ export async function middleware(request: NextRequest) {
 
   // защищаем дашборд и чат
   const path = request.nextUrl.pathname;
-  const isProtected = path === "/" || path.startsWith("/chat");
+  const isProtected =
+    path === "/" || path.startsWith("/chat") || path.startsWith("/intro");
   if (!user && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
   }

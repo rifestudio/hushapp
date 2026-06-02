@@ -9,6 +9,9 @@
 .partners-header {
   padding: 0 2rem;
   margin-bottom: 2rem;
+  max-width: 1200px; /* ← добавь */
+  margin-left: auto; /* ← добавь */
+  margin-right: auto; /* ← добавь */
 }
 
 .partners-title {

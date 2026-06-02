@@ -3,7 +3,7 @@ export interface Partner {
   name: string;
   personality: string;
   interestLevel: number;
-  interestLabel: 'Stranger' | 'Familiar' | 'Friend' | 'Deeply Related';
+  interestLabel: "Stranger" | "Familiar" | "Friend" | "Deeply Related";
   portraitUrl: string;
   lastInteraction: Date;
 }
@@ -11,6 +11,6 @@ export interface Partner {
 export interface User {
   name: string;
   avatarUrl: string;
-  plan: 'free' | 'premium';
+  plan: "free" | "premium";
   enthusiasmBalance: number;
 }

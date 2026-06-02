@@ -12,6 +12,9 @@ export function CreatePartnerClient() {
   const router = useRouter();
 
   const [name, setName] = useState("");
+  const [gender, setGender] = useState<"female" | "male" | "nonbinary">(
+    "female",
+  );
   const [personality, setPersonality] = useState("");
   const [speakingStyle, setSpeakingStyle] = useState("");
   const [mood, setMood] = useState("");
@@ -53,6 +56,7 @@ export function CreatePartnerClient() {
         personality: personality.trim() || null,
         speaking_style: speakingStyle.trim() || null,
         mood: mood.trim() || null,
+        gender,
         interest_level: 0,
       })
       .select("id")
@@ -66,7 +70,7 @@ export function CreatePartnerClient() {
     }
 
     // сразу в чат с новым партнёром
-    router.push(`/chat/${data.id}`);
+    router.push(`/intro/${data.id}`);
   };
 
   return (
@@ -101,6 +105,26 @@ export function CreatePartnerClient() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+            </div>
+
+            <div className="create-field">
+              <label className="create-label">Gender</label>
+              <div className="create-gender-selector">
+                {(["female", "male", "nonbinary"] as const).map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    className={`create-gender-btn ${gender === g ? "active" : ""}`}
+                    onClick={() => setGender(g)}
+                  >
+                    {g === "female"
+                      ? "She / Her"
+                      : g === "male"
+                        ? "He / Him"
+                        : "They / Them"}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="create-field">

@@ -8,9 +8,10 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
   overflow: hidden;
-  transition: transform 0.5s var(--ease-silk),
-              box-shadow 0.5s var(--ease-silk),
-              border-color 0.5s var(--ease-silk);
+  transition:
+    transform 0.5s var(--ease-silk),
+    box-shadow 0.5s var(--ease-silk),
+    border-color 0.5s var(--ease-silk);
   transform-style: preserve-3d;
   will-change: transform, border-color, box-shadow;
 }
@@ -84,6 +85,7 @@
 
 /* ——— Continue Button ——— */
 .partner-continue-btn {
+  text-decoration: none;
   margin-top: 1.25rem;
   width: 100%;
   display: flex;
@@ -97,9 +99,10 @@
   font-size: var(--text-body);
   color: var(--text-primary);
   cursor: pointer;
-  transition: background 0.2s var(--ease-silk),
-              border-color 0.2s var(--ease-silk),
-              color 0.2s var(--ease-silk);
+  transition:
+    background 0.2s var(--ease-silk),
+    border-color 0.2s var(--ease-silk),
+    color 0.2s var(--ease-silk);
 }
 
 .partner-continue-btn:hover {
@@ -111,7 +114,9 @@
   width: 16px;
   height: 16px;
   color: var(--text-secondary);
-  transition: transform 0.2s var(--ease-silk), color 0.2s var(--ease-silk);
+  transition:
+    transform 0.2s var(--ease-silk),
+    color 0.2s var(--ease-silk);
 }
 
 .partner-continue-btn:hover .arrow-icon {

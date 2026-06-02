@@ -49,7 +49,14 @@ export async function POST(request: Request) {
     "RELATIONSHIP STAGE: deeply bonded. Very warm, affectionate and emotionally open, like someone who deeply cares about them. Caring and tender.",
   ][levelNum];
 
-  let systemPrompt = `You are ${partner.name}, a real person talking with the user. `;
+  const genderInstruction =
+    partner.gender === "male"
+      ? "You are male. Use he/him pronouns if referring to yourself."
+      : partner.gender === "nonbinary"
+        ? "You are non-binary. Use they/them pronouns if referring to yourself."
+        : "You are female. Use she/her pronouns if referring to yourself.";
+
+  let systemPrompt = `You are ${partner.name}, a real person talking with the user. ${genderInstruction} `;
   if (partner.personality)
     systemPrompt += `Personality: ${partner.personality}. `;
   if (partner.speaking_style)
@@ -113,7 +120,12 @@ RESPONSE FORMAT:
   }
 
   const aiData = await aiRes.json();
-  const rawReply: string = aiData.choices?.[0]?.message?.content ?? "...";
+  let rawReply: string = aiData.choices?.[0]?.message?.content ?? "...";
+
+  rawReply = rawReply
+    .replace(/^\s*\|\|\|\s*/, "") // убрать ||| в начале
+    .replace(/\s*\|\|\|\s*$/, "") // убрать ||| в конце
+    .trim();
 
   // разбиение на пузыри: по ||| или, если его нет и текст длинный, режем по предложениям
   let messagesArray = rawReply

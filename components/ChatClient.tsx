@@ -19,6 +19,7 @@ interface Partner {
   personality: string | null;
   portrait_url: string | null;
   interest_level: number;
+  gender: string | null;
 }
 
 export function ChatClient({ partnerId }: { partnerId: string }) {
@@ -35,7 +36,7 @@ export function ChatClient({ partnerId }: { partnerId: string }) {
     (async () => {
       const { data: p } = await supabase
         .from("partners")
-        .select("id, name, personality, portrait_url, interest_level")
+        .select("id, name, personality, portrait_url, interest_level, gender")
         .eq("id", partnerId)
         .single();
       setPartner(p);

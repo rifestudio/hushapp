@@ -9,6 +9,10 @@ import { useEntranceSequence } from "@/hooks/useEntranceSequence";
 import { createClient } from "@/lib/supabase/client";
 import type { Partner } from "@/types";
 
+import female from "./assets/female.jpg";
+import male from "./assets/male.jpg";
+import nonbinary from "./assets/nonbinary.jpg";
+
 const levels = ["Stranger", "Familiar", "Friend", "Deeply Related"] as const;
 
 export default function DashboardClient() {
@@ -52,10 +56,16 @@ export default function DashboardClient() {
       const { data: rows } = await supabase
         .from("partners")
         .select(
-          "id, name, personality, interest_level, portrait_url, created_at",
+          "id, name, personality, interest_level, portrait_url, created_at, gender",
         )
         .eq("user_id", authUser.id)
         .order("created_at", { ascending: false });
+
+      const genderPortrait: Record<string, string> = {
+        female: "/assets/female.jpg",
+        male: "/assets/male.jpg",
+        nonbinary: "/assets/nonbinary.jpg",
+      };
 
       const mapped: Partner[] = (rows ?? []).map((p) => {
         const lvl = Math.min(3, Math.floor((p.interest_level ?? 0) / 25));
@@ -65,7 +75,10 @@ export default function DashboardClient() {
           personality: p.personality ?? "",
           interestLevel: p.interest_level ?? 0,
           interestLabel: levels[lvl],
-          portraitUrl: p.portrait_url ?? "/assets/partner-1.jpg",
+          portraitUrl:
+            p.portrait_url ??
+            genderPortrait[p.gender ?? "female"] ??
+            "/assets/partner-1.jpg",
           lastInteraction: new Date(p.created_at),
         };
       });
