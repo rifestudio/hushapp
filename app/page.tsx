@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useInView, type Variants } from "framer-motion";
 
@@ -96,6 +96,21 @@ function ScrollReveal({
 }
 
 export default function LandingPage() {
+  const [showPopup, setShowPopup] = useState(false);
+  const [closingPopup, setClosingPopup] = useState(false);
+
+  const closePopup = () => {
+    setClosingPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+      setClosingPopup(false);
+    }, 400);
+  };
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowPopup(true), 3000);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <main className="landing">
       <div className="grain-overlay" />
@@ -263,6 +278,41 @@ export default function LandingPage() {
           <Link href="/register">Register</Link>
         </div>
       </footer>
+      {/* EARLY ACCESS POPUP */}
+      {showPopup && (
+        <div
+          className={`popup-overlay ${closingPopup ? "popup-closing" : ""}`}
+          onClick={closePopup}
+        >
+          <div
+            className={`popup-card ${closingPopup ? "popup-closing" : ""}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="popup-close" onClick={closePopup}>
+              ×
+            </button>
+            <div className="popup-dot" />
+            <p className="popup-eyebrow">Limited early access</p>
+            <h3 className="popup-title">
+              24 spots
+              <br />
+              remaining
+            </h3>
+            <p className="popup-desc">
+              First 100 users get one year of free premium — no credit card, no
+              catch.
+            </p>
+            <Link
+              href="/register"
+              className="landing-btn-primary"
+              onClick={closePopup}
+            >
+              Claim your spot →
+            </Link>
+            <p className="popup-note">Easy to start · Takes 60 seconds</p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
