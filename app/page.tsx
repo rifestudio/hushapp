@@ -66,8 +66,6 @@ function ScrollReveal({
   );
 }
 
-const DISCORD_LINK = "ВСТАВЬ_СЮДА_ССЫЛКУ_НА_DISCORD";
-
 export default function LandingPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [closingPopup, setClosingPopup] = useState(false);
@@ -83,17 +81,47 @@ export default function LandingPage() {
     }, 400);
   };
 
+  const goToForm = () => {
+    closePopup();
+    const input = document.querySelector(
+      ".landing-email-input",
+    ) as HTMLInputElement | null;
+    input?.scrollIntoView({ behavior: "smooth", block: "center" });
+    input?.focus();
+  };
+
   useEffect(() => {
     const t = setTimeout(() => setShowPopup(true), 3000);
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get("utm_source");
+    if (source && !localStorage.getItem("hush_utm")) {
+      localStorage.setItem(
+        "hush_utm",
+        JSON.stringify({
+          utm_source: source,
+          utm_medium: params.get("utm_medium"),
+          referrer: document.referrer || null,
+        }),
+      );
+    }
+  }, []);
+
   const handleWaitlist = async () => {
     if (!email || joining) return;
     setJoining(true);
+    const utm = JSON.parse(localStorage.getItem("hush_utm") || "{}");
     const supabase = createClient();
-    await supabase.from("waitlist").insert({ email });
-    setJoined(true);
+    const { error } = await supabase.from("waitlist").insert({
+      email,
+      utm_source: utm.utm_source ?? null,
+      utm_medium: utm.utm_medium ?? null,
+      referrer: utm.referrer ?? null,
+    });
+    if (!error) setJoined(true);
     setJoining(false);
   };
 
@@ -166,19 +194,11 @@ export default function LandingPage() {
             ) : (
               <div className="landing-joined">
                 <p className="landing-joined-title">You're on the list 🤍</p>
-                <a
-                  href={DISCORD_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="landing-discord-link"
-                >
-                  Join our Discord for priority access →
-                </a>
               </div>
             )}
             <span className="landing-free-note">
               {!joined
-                ? "Early Discord members get priority access"
+                ? "Free early access · No spam, ever"
                 : "We'll email you when your spot is ready"}
             </span>
           </motion.div>
@@ -284,14 +304,7 @@ export default function LandingPage() {
                 </button>
               </div>
             ) : (
-              <a
-                href={DISCORD_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="landing-btn-primary landing-btn-lg"
-              >
-                Join our Discord →
-              </a>
+              <p className="landing-joined-title">You're on the list 🤍</p>
             )}
           </motion.div>
           <motion.p className="landing-bottom-note" variants={fadeUp}>
@@ -327,23 +340,19 @@ export default function LandingPage() {
             <div className="popup-dot" />
             <p className="popup-eyebrow">Closed Beta</p>
             <h3 className="popup-title">
-              Join the
+              Early spots are
               <br />
-              waitlist 🤍
+              limited 🤍
             </h3>
             <p className="popup-desc">
-              Early Discord members get priority access. <br />
-              Be among the first to talk to your companion.
+              We're letting people in gradually, in small waves.
+              <br />
+              Waitlist members get in 1st - and keep early-access perks after
+              launch.
             </p>
-            <a
-              href={DISCORD_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="landing-btn-primary"
-              onClick={closePopup}
-            >
-              Join Discord →
-            </a>
+            <button className="landing-btn-primary" onClick={goToForm}>
+              Join the waitlist →
+            </button>
           </div>
         </div>
       )}
