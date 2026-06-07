@@ -286,14 +286,14 @@ export function AuthPage({ mode }: AuthPageProps) {
               </div>
             )}
 
-            {!isRegister && (
+            {/* {!isRegister && (
               <div className="auth-row">
                 <span />
                 <Link className="auth-link" href="/reset">
                   Forgot it?
                 </Link>
               </div>
-            )}
+            )} */}
 
             {error && (
               <p
@@ -333,9 +333,11 @@ export function AuthPage({ mode }: AuthPageProps) {
 
             <p className="auth-switch">
               {isRegister ? "Already have a key?" : "Don't have a key yet?"}
+
               <Link
                 className="auth-link"
-                href={isRegister ? "/login" : "/register"}
+                // href={isRegister ? "/login" : "/register"}
+                href={isRegister ? "/login" : "/"}
               >
                 {isRegister ? "Enter" : "Create one"}
               </Link>

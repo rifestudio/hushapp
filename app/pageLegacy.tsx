@@ -3,37 +3,61 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useInView, type Variants } from "framer-motion";
-import { createClient } from "@/lib/supabase/client";
 
 import "@/app/landing.css";
+
+// ——— Animation variants ———
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.9, ease },
+  },
 };
 
 const fadeUpSlow: Variants = {
   hidden: { opacity: 0, y: 60 },
-  show: { opacity: 1, y: 0, transition: { duration: 1.2, ease } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1.2, ease },
+  },
 };
 
 const navVariant: Variants = {
   hidden: { opacity: 0, y: -20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease },
+  },
 };
 
 const cardVariant: Variants = {
   hidden: { opacity: 0, y: 40, scale: 0.97 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.9, ease } },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.9, ease },
+  },
 };
 
 const stagger = (delayChildren = 0.1): Variants => ({
   hidden: {},
-  show: { transition: { staggerChildren: delayChildren, delayChildren: 0.1 } },
+  show: {
+    transition: {
+      staggerChildren: delayChildren,
+      delayChildren: 0.1,
+    },
+  },
 });
 
+// ——— Scroll section wrapper ———
 function ScrollReveal({
   children,
   className,
@@ -47,12 +71,17 @@ function ScrollReveal({
 }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: threshold });
+
   const containerVariants: Variants = {
     hidden: {},
     show: {
-      transition: { staggerChildren: delayChildren, delayChildren: 0.1 },
+      transition: {
+        staggerChildren: delayChildren,
+        delayChildren: 0.1,
+      },
     },
   };
+
   return (
     <motion.div
       ref={ref}
@@ -66,14 +95,9 @@ function ScrollReveal({
   );
 }
 
-const DISCORD_LINK = "ВСТАВЬ_СЮДА_ССЫЛКУ_НА_DISCORD";
-
 export default function LandingPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [closingPopup, setClosingPopup] = useState(false);
-  const [email, setEmail] = useState("");
-  const [joined, setJoined] = useState(false);
-  const [joining, setJoining] = useState(false);
 
   const closePopup = () => {
     setClosingPopup(true);
@@ -87,16 +111,6 @@ export default function LandingPage() {
     const t = setTimeout(() => setShowPopup(true), 3000);
     return () => clearTimeout(t);
   }, []);
-
-  const handleWaitlist = async () => {
-    if (!email || joining) return;
-    setJoining(true);
-    const supabase = createClient();
-    await supabase.from("waitlist").insert({ email });
-    setJoined(true);
-    setJoining(false);
-  };
-
   return (
     <main className="landing">
       <div className="grain-overlay" />
@@ -118,6 +132,9 @@ export default function LandingPage() {
           <Link href="/login" className="landing-nav-link">
             Sign in
           </Link>
+          <Link href="/register" className="landing-cta-sm">
+            Try free
+          </Link>
         </div>
       </motion.nav>
 
@@ -130,7 +147,7 @@ export default function LandingPage() {
           animate="show"
         >
           <motion.div className="landing-eyebrow" variants={fadeUp}>
-            AI companion · Closed Beta
+            AI companion · Beta
           </motion.div>
 
           <motion.h1 className="landing-headline" variants={fadeUpSlow}>
@@ -139,47 +156,18 @@ export default function LandingPage() {
             <em>Someone's already listening.</em>
           </motion.h1>
 
-          {/* <motion.p className="landing-sub" variants={fadeUp}>
+          <motion.p className="landing-sub" variants={fadeUp}>
             Sign up, create your companion, say anything — all in under a
             minute. No small talk, no judgment, no waiting.
-          </motion.p> */}
+          </motion.p>
 
           <motion.div className="landing-hero-cta" variants={fadeUp}>
-            {!joined ? (
-              <div className="landing-waitlist-form">
-                <input
-                  type="email"
-                  className="landing-email-input"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleWaitlist()}
-                />
-                <button
-                  className="landing-btn-primary"
-                  onClick={handleWaitlist}
-                  disabled={joining}
-                >
-                  {joining ? "Joining..." : "Join waitlist →"}
-                </button>
-              </div>
-            ) : (
-              <div className="landing-joined">
-                <p className="landing-joined-title">You're on the list 🤍</p>
-                <a
-                  href={DISCORD_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="landing-discord-link"
-                >
-                  Join our Discord for priority access →
-                </a>
-              </div>
-            )}
+            <Link href="/register" className="landing-btn-primary">
+              Start in 60 seconds
+              <span className="btn-arrow">→</span>
+            </Link>
             <span className="landing-free-note">
-              {!joined
-                ? "Early Discord members get priority access"
-                : "We'll email you when your spot is ready"}
+              Free to start · No credit card
             </span>
           </motion.div>
         </motion.div>
@@ -265,37 +253,16 @@ export default function LandingPage() {
             <em>Someone should hear it.</em>
           </motion.h2>
           <motion.div variants={fadeUp}>
-            {!joined ? (
-              <div className="landing-waitlist-form">
-                <input
-                  type="email"
-                  className="landing-email-input"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleWaitlist()}
-                />
-                <button
-                  className="landing-btn-primary landing-btn-lg"
-                  onClick={handleWaitlist}
-                  disabled={joining}
-                >
-                  {joining ? "Joining..." : "Join the waitlist →"}
-                </button>
-              </div>
-            ) : (
-              <a
-                href={DISCORD_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="landing-btn-primary landing-btn-lg"
-              >
-                Join our Discord →
-              </a>
-            )}
+            <Link
+              href="/register"
+              className="landing-btn-primary landing-btn-lg"
+            >
+              Meet them in 60 seconds
+              <span className="btn-arrow">→</span>
+            </Link>
           </motion.div>
           <motion.p className="landing-bottom-note" variants={fadeUp}>
-            No credit card · No app to download · Works in any browser
+            Free to start · No app to download · Works in any browser
           </motion.p>
         </ScrollReveal>
       </section>
@@ -308,10 +275,10 @@ export default function LandingPage() {
         </span>
         <div className="landing-footer-links">
           <Link href="/login">Sign in</Link>
+          <Link href="/register">Register</Link>
         </div>
       </footer>
-
-      {/* POPUP */}
+      {/* EARLY ACCESS POPUP */}
       {showPopup && (
         <div
           className={`popup-overlay ${closingPopup ? "popup-closing" : ""}`}
@@ -325,25 +292,24 @@ export default function LandingPage() {
               ×
             </button>
             <div className="popup-dot" />
-            <p className="popup-eyebrow">Closed Beta</p>
+            <p className="popup-eyebrow">Limited early access</p>
             <h3 className="popup-title">
-              Join the
+              24 spots
               <br />
-              waitlist 🤍
+              remaining
             </h3>
             <p className="popup-desc">
-              Early Discord members get priority access. <br />
-              Be among the first to talk to your companion.
+              First 100 users get one year of free premium — no credit card, no
+              catch.
             </p>
-            <a
-              href={DISCORD_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/register"
               className="landing-btn-primary"
               onClick={closePopup}
             >
-              Join Discord →
-            </a>
+              Claim your spot →
+            </Link>
+            <p className="popup-note">Easy to start · Takes 60 seconds</p>
           </div>
         </div>
       )}

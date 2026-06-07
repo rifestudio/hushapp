@@ -29,18 +29,43 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // защищаем дашборд и чат
   const path = request.nextUrl.pathname;
   const isProtected =
     path.startsWith("/home") ||
     path.startsWith("/chat") ||
     path.startsWith("/intro") ||
     path.startsWith("/create");
+
+  // незалогиненных на защищённые страницы → логин
   if (!user && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  // залогиненных на / редиректим на /home
+
+  // залогиненных проверяем approved
+  if (user && isProtected) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("approved")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.approved) {
+      return NextResponse.redirect(new URL("/waitlist", request.url));
+    }
+  }
+
+  // залогиненных на / → /home
   if (user && path === "/") {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("approved")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.approved) {
+      return NextResponse.redirect(new URL("/waitlist", request.url));
+    }
+
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
